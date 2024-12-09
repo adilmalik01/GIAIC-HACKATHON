@@ -58,7 +58,6 @@ export default function Home() {
       price: "14.55",
       image: "/mainImages/new.png",
     }, ,
-    // Add more items here
   ];
 
   const chefs = [
@@ -181,9 +180,9 @@ export default function Home() {
             </div>
 
           </div>
-          <div className="image grid-cols-3">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-4xl w-full">
-              <div className="">
+          <div className="image">
+            <div className="grid grid-cols-1 max-md:px-5 place-items-center lg:grid-cols-2 gap-4 max-w-4xl w-full">
+              <div className=" col-span-2">
                 <Image
                   src={"/mainImages/1.png"}
                   alt="Dish"
@@ -221,7 +220,7 @@ export default function Home() {
             <h1 className=" font-hal  text-[48px]"><span className="text-[#FF9F0D]">Ch</span>oose Food Iteam </h1>
           </div>
 
-          <div className="dishes  max-lg:py-8  w-full gap-2 max-md:grid-cols-2    place-items-center min-h-[50%] max-lg:grid-cols-2 max-sm:grid-col-1 py-7 grid grid-cols-4 ">
+          <div className="dishes  max-lg:py-8  w-full gap-2 max-md:grid-cols-1    place-items-center min-h-[50%] max-lg:grid-cols-2 max-sm:grid-col-1 py-7 grid grid-cols-4 ">
             <Image
               src={"/mainImages/dish1.png"}
               alt="Dish"
@@ -257,7 +256,7 @@ export default function Home() {
         <section className="grid grid-cols-2 container mx-auto max-lg:grid-cols-1 min-h-screen w-full   place-items-center">
 
           <div className="image grid-cols-3">
-            <div className="grid grid-cols-2 max-md:grid-cols-2 max-lg:grid-cols-2  max-md:place-items-center gap-4  w-full">
+            <div className="grid grid-cols-2 max-md:px-5 max-md:grid-cols-2 max-lg:grid-cols-2  max-md:place-items-center gap-4  w-full">
               <div className="  col-span-1">
                 <Image
                   src="/mainImages/1.png"
@@ -418,7 +417,7 @@ export default function Home() {
                   menuItems.map((item: any, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 rounded-lg p-1"
+                      className="flex items-center max-md:flex-col text-center gap-4 rounded-lg p-1"
                     >
                       <Image
                         src={item.image}
@@ -451,7 +450,7 @@ export default function Home() {
 
           <div className="">
             <div className=" text-white py-10">
-              <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="max-w-6xl mx-auto grid   max-lg:px-8  max-lg:grid-col-1 lg:grid-cols-4 gap-6">
                 {chefs.map((chef, index) => (
                   <div
                     key={index}
@@ -558,7 +557,7 @@ export default function Home() {
           </div>
 
           <div className="container mx-auto">
-            <div className="grid  gap-6 place-items-center max-md:grid-cols-1 max-lg:grid-cols-2">
+            <div className="grid  gap-3 place-items-center max-md:grid-cols-1 grid-cols-3  max-lg:grid-cols-2">
               {blogs.map((blog) => (
                 <div
                   key={blog.id}
