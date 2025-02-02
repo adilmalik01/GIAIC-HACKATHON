@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@font-face {
+  font-family: Halvetica;
+  src: url('/font/halvitika/Helvetica-Bold.woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+.great {
+  font-family: 'Great Vibes', 'cursive';
+}
+
+.hal {
+  font-family: 'Halvetica', 'Arial', 'sans-serif';
+}
+
+.inter {
+  font-family: 'Inter', 'Arial', 'sans-serif';
+}
+
+.App {
+  color: white;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0d0d0d;
+}
+
+.check-list {
+  list-style: '✔';
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

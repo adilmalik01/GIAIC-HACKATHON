@@ -1,0 +1,3 @@
+NEXT_PUBLIC_SANITY_PROJECT_ID="r8ztstut"
+NEXT_PUBLIC_SANITY_DATASET="production"
+NEXT_PUBLIC_MONGODB_URI="mongodb+srv://adilmalik:adilmalik@cluster0.00tt7hd.mongodb.net/foodtuck?retryWrites=true&w=majority&appName=Cluster0"
