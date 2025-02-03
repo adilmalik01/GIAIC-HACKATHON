@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Layout from "../Layout";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -19,22 +19,27 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import Image from "next/image";
 
 const categorySchema = Yup.object().shape({
+
+  
   name: Yup.string().min(3, "Category name must be at least 3 characters").required("Required"),
 });
 
-
 const Category = () => {
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-  const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState<{ id: number; name: string; image: string }[]>([]);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const fetchCategories = async () => {
     try {
-      const response: AxiosResponse<any, any> = await axios.get("/api/category");
+      const response = await axios.get("/api/categorys");
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -45,31 +50,40 @@ const Category = () => {
     fetchCategories();
   }, []);
 
-  const addCategory = async (name: string) => {
-    try {
-      const response: any = await axios.post("/api/category", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
 
-      if (response.ok) {
-        fetchCategories();
-        setOpen(false);
+  const addCategory = async (values: { name: string }) => {
+    try {
+      let formData: any = new FormData();
+      formData.append("name", values.name);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
       }
+      await axios.post("/api/category", formData);
+      fetchCategories();
+      handleCloseAddDialog();
     } catch (error) {
       console.error("Error adding category:", error);
     }
   };
 
-  const updateCategory = async (id: number, name: string) => {
+  const updateCategory = async (values: { name: string }) => {
+    if (editIndex === null) return;
     try {
-      const response = await axios.put(`/api/category/${id}`, { body: JSON.stringify({ name }) });
-
-      if (response.ok) {
-        fetchCategories();
-        setOpen(false);
+      let formData: any = new FormData();
+      formData.append("name", values.name);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
       }
+      await axios.put(`/api/category/${categories[editIndex].id}`, formData);
+      fetchCategories();
+      handleCloseEditDialog();
     } catch (error) {
       console.error("Error updating category:", error);
     }
@@ -78,31 +92,42 @@ const Category = () => {
   const deleteCategory = async () => {
     if (deleteId === null) return;
     try {
-      const response = await axios.delete(`/api/category/${deleteId}`);
-      if (response.ok) {
-        fetchCategories();
-        setDeleteDialog(false);
-      }
+      await axios.delete(`/api/category/${deleteId}`);
+      fetchCategories();
+      setDeleteDialog(false);
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
 
-  const handleOpen = (index: number | null = null) => {
-    setEditIndex(index);
-    setOpen(true);
+  const handleOpenAddDialog = () => {
+    setOpenAddDialog(true);
+    setPreviewImage(null);
+    setSelectedImage(null);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseAddDialog = () => {
+    setOpenAddDialog(false);
+  };
+
+  const handleOpenEditDialog = (index: number) => {
+    setEditIndex(index);
+    setOpenEditDialog(true);
+    setPreviewImage(categories[index].image);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
     setEditIndex(null);
+    setSelectedImage(null);
+    setPreviewImage(null);
   };
 
   return (
     <Layout>
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Manage Categories</h2>
-        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+        <Button variant="contained" color="primary" onClick={handleOpenAddDialog}>
           Add Category
         </Button>
 
@@ -111,23 +136,27 @@ const Category = () => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
+                <TableCell>Image</TableCell>
                 <TableCell>Category Name</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {categories.map((category, index) => (
-                <TableRow key={category.id}>
+              {categories.map((category:any, index) => (
+                <TableRow key={category._id}>
                   <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    <Image width={100} height={100} src={category.image} alt="Category" className="h-12 w-12 object-cover" />
+                  </TableCell>
                   <TableCell>{category.name}</TableCell>
                   <TableCell>
-                    <Button color="primary" onClick={() => handleOpen(index)}>
+                    <Button color="primary" onClick={() => handleOpenEditDialog(index)}>
                       Edit
                     </Button>
                     <Button
                       color="secondary"
                       onClick={() => {
-                        setDeleteId(category.id);
+                        setDeleteId(category._id);
                         setDeleteDialog(true);
                       }}
                     >
@@ -140,21 +169,15 @@ const Category = () => {
           </Table>
         </TableContainer>
 
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>{editIndex !== null ? "Edit Category" : "Add Category"}</DialogTitle>
+        <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
+          <DialogTitle>Add Category</DialogTitle>
           <DialogContent>
             <Formik
               initialValues={{
-                name: editIndex !== null ? categories[editIndex].name : "",
+                name: "",
               }}
               validationSchema={categorySchema}
-              onSubmit={(values) => {
-                if (editIndex !== null) {
-                  updateCategory(categories[editIndex].id, values.name);
-                } else {
-                  addCategory(values.name);
-                }
-              }}
+              onSubmit={addCategory}
             >
               {({ errors, touched, handleChange }) => (
                 <Form>
@@ -168,12 +191,64 @@ const Category = () => {
                     helperText={touched.name && errors.name}
                     className="mt-3"
                   />
+                  <div className="mt-3">
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
+                  </div>
+                  {previewImage && (
+                    <div className="mt-3">
+                      <Image src={previewImage} alt="Preview" width={100} height={100} className="h-16 w-16 object-cover" />
+                    </div>
+                  )}
                   <DialogActions>
-                    <Button onClick={handleClose} color="secondary">
+                    <Button onClick={handleCloseAddDialog} color="secondary">
                       Cancel
                     </Button>
                     <Button type="submit" color="primary">
-                      {editIndex !== null ? "Update" : "Add"}
+                      Add
+                    </Button>
+                  </DialogActions>
+                </Form>
+              )}
+            </Formik>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
+          <DialogTitle>Edit Category</DialogTitle>
+          <DialogContent>
+            <Formik
+              initialValues={{
+                name: categories[editIndex!]?.name || "",
+              }}
+              validationSchema={categorySchema}
+              onSubmit={updateCategory}
+            >
+              {({ errors, touched, handleChange }) => (
+                <Form>
+                  <Field
+                    as={TextField}
+                    label="Category Name"
+                    name="name"
+                    fullWidth
+                    onChange={handleChange}
+                    error={touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    className="mt-3"
+                  />
+                  <div className="mt-3">
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
+                  </div>
+                  {previewImage && (
+                    <div className="mt-3">
+                      <Image src={previewImage} alt="Preview" width={100} height={100} className="h-16 w-16 object-cover" />
+                    </div>
+                  )}
+                  <DialogActions>
+                    <Button onClick={handleCloseEditDialog} color="secondary">
+                      Cancel
+                    </Button>
+                    <Button type="submit" color="primary">
+                      Update
                     </Button>
                   </DialogActions>
                 </Form>

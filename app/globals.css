@@ -27,6 +27,11 @@
   background-color: #0d0d0d;
 }
 
+.custom-toast-popup {
+  position:relative;
+  z-index: 9999999 !important;
+}
+
 .check-list {
   list-style: '✔';
 }

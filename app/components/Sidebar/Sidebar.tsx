@@ -20,6 +20,13 @@ const Sidebar = () => {
                         </li>
                     </Link>
 
+                    <Link href="/dashboard/dishes">
+                        <li className="p-4 cursor-pointer hover:bg-gray-700 flex items-center gap-4">
+                            <PlusCircleFill />
+                            Dishes & Stock
+                        </li>
+                    </Link>
+
                     <Link href="/dashboard/category">
                         <li className="p-4 cursor-pointer hover:bg-gray-700 flex items-center gap-4">
                             <PlusCircleFill />

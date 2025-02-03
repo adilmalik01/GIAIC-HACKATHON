@@ -26,7 +26,7 @@ export async function POST (request: Request) {
     const formData = await request.formData()
     const images = formData.getAll('images') as File[]
 
-    let imageUrls: string[] = []
+    const imageUrls: string[] = []
 
     for (const image of images) {
       const buffer = await image.arrayBuffer()
@@ -67,6 +67,43 @@ export async function POST (request: Request) {
     console.error('Error inserting dish:', error)
     return NextResponse.json(
       { error: 'Failed to create dish' },
+      { status: 500 }
+    )
+  }
+}
+
+
+export async function DELETE(request: Request) {
+  await connectDB()
+
+  try {
+    const url = new URL(request.url)
+    const dishId = url.searchParams.get('id')
+
+    if (!dishId) {
+      return NextResponse.json(
+        { error: 'Dish ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const deletedDish = await Dish.findByIdAndDelete(dishId)
+
+    if (!deletedDish) {
+      return NextResponse.json(
+        { error: 'Dish not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(
+      { message: 'Dish deleted successfully', deletedDish },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error('Error deleting dish:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete dish' },
       { status: 500 }
     )
   }

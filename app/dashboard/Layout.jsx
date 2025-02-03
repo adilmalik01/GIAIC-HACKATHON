@@ -3,9 +3,9 @@ import Topbar from "@/app/components/Topbar/Topbar";
 
 const Layout = ({ children }) => {
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex h-screen bg-gray-100 ">
             <Sidebar />
-            <div className="flex  overflow-auto w-full flex-col flex-grow">
+            <div className="flex  overflow-x-hidden overflow-y-auto w-full flex-col flex-grow">
                 <Topbar />
                 {children}
             </div>
