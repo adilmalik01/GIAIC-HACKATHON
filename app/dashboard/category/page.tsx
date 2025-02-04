@@ -20,6 +20,7 @@ import {
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
+import { Sucess } from "@/app/components/Alerts/Alert";
 
 const categorySchema = Yup.object().shape({
 
@@ -39,8 +40,9 @@ const Category = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("/api/categorys");
-      setCategories(response.data);
+      const response = await axios.get("/api/category");
+      setCategories(response.data.categories);
+      console.log(response)
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -65,7 +67,11 @@ const Category = () => {
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
-      await axios.post("/api/category", formData);
+    let response = await axios.post("/api/category", formData);
+      if(response.statusText){
+        Sucess(response.data.message,"success")
+      }
+
       fetchCategories();
       handleCloseAddDialog();
     } catch (error) {
@@ -92,7 +98,10 @@ const Category = () => {
   const deleteCategory = async () => {
     if (deleteId === null) return;
     try {
-      await axios.delete(`/api/category/${deleteId}`);
+     let response =  await axios.delete(`/api/category?id=${deleteId}`);
+      if(response.statusText){
+        Sucess(response.data.message,"success")
+      }
       fetchCategories();
       setDeleteDialog(false);
     } catch (error) {

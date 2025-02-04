@@ -1,3 +1,5 @@
+
+
 import Category from '@/app/models/Category'
 import cloudinary from '@/lib/cloudinary'
 import connectDB from '@/lib/mongodb'
@@ -8,7 +10,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const categories = await Category.find({})
-        return NextResponse.json({ categories: categories })
+        return NextResponse.json({  categories })
     } catch (error) {
         console.error('Error fetching categories:', error)
         return NextResponse.json(
@@ -19,34 +21,45 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-    await connectDB()
+    await connectDB();
 
     try {
-        const formData = await request.formData()
-        const image = formData.get("image")
-        const buffer = await image.arrayBuffer()
-        const base64Image = Buffer.from(buffer).toString('base64')
-        const uploadedImage = await cloudinary.uploader.upload(
-            `data:image/png;base64,${base64Image}`)
-        const category = {
-            name: formData.get('name') as string,
-            image: uploadedImage
+        const formData = await request.formData();
+
+        const imageFile = formData.get("image") as File | null;
+        console.log("Received Image File:", imageFile);
+
+        if (!imageFile) {
+            return NextResponse.json({ error: "Image is required" }, { status: 400 });
         }
 
-        console.log('Received category:', category)
+        const buffer = await imageFile.arrayBuffer();
+        const base64Image = Buffer.from(buffer).toString("base64");
 
-        const newCategory = new Category(category)
-        await newCategory.save()
+        console.log("Base64 Image (first 50 chars):", base64Image.substring(0, 50) + "...");
+
+        const uploadedImage = await cloudinary.uploader.upload(`data:${imageFile.type};base64,${base64Image}`);
+
+        console.log("Cloudinary Response:", uploadedImage);
+
+        const category = {
+            name: formData.get("name") as string,
+            image: uploadedImage.secure_url, // Save only the URL
+        };
+
+        const newCategory = new Category(category);
+        await newCategory.save();
+
         return NextResponse.json(
-            { message: 'Category created successfully', category },
+            { message: "Category created successfully", category },
             { status: 201 }
-        )
+        );
     } catch (error) {
-        console.error('Error inserting category:', error)
+        console.error("Error inserting category:", error);
         return NextResponse.json(
-            { error: 'Failed to create category' },
+            { error: "Failed to create category", details: error },
             { status: 500 }
-        )
+        );
     }
 }
 
