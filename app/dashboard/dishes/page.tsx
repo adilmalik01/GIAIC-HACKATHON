@@ -5,15 +5,16 @@ import axios from "axios";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Paper, IconButton, Avatar, Button, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField, Select, MenuItem
+    DialogActions, TextField, Select, MenuItem,
+    Chip
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
-import Swal from 'sweetalert2';
 import { Sucess } from "@/app/components/Alerts/Alert";
 
 const Dishes = () => {
     const [dishes, setDishes] = useState([]);
+    const [ingredients, setIngredients] = useState([]);
     const [open, setOpen] = useState(false);
     const [editDish, setEditDish] = useState(null);
     const isMobile = useMediaQuery("(max-width:600px)");
@@ -32,7 +33,7 @@ const Dishes = () => {
         FetchProducts();
     }, []);
 
-    const DeleteProduct = async (DeleteId) => {
+    const DeleteProduct = async (DeleteId: string) => {
         try {
             const response = await axios.delete(`/api/dishes?id=${DeleteId}`);
             if (response.status === 200) {
@@ -44,7 +45,7 @@ const Dishes = () => {
         }
     };
 
-    const handleEditClick = (dish) => {
+    const handleEditClick = (dish: any) => {
         setEditDish(dish);
         setOpen(true);
     };
@@ -104,51 +105,29 @@ const Dishes = () => {
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
                 <DialogTitle>Edit Dish</DialogTitle>
                 <DialogContent>
-                    {editDish && (
+                {editDish && (
                         <>
-                            <TextField
-                                label="Dish Name"
-                                fullWidth
-                                margin="dense"
-                                value={editDish.name}
-                                onChange={(e) => setEditDish({ ...editDish, name: e.target.value })}
-                            />
-                            <TextField
-                                label="Description"
-                                fullWidth
-                                margin="dense"
-                                multiline
-                                rows={3}
-                                value={editDish.description}
-                                onChange={(e) => setEditDish({ ...editDish, description: e.target.value })}
-                            />
-                            <TextField
-                                label="Price ($)"
-                                fullWidth
-                                type="number"
-                                margin="dense"
-                                value={editDish.price}
-                                onChange={(e) => setEditDish({ ...editDish, price: e.target.value })}
-                            />
-                            <TextField
-                                label="Stock"
-                                fullWidth
-                                type="number"
-                                margin="dense"
-                                value={editDish.stock}
-                                onChange={(e) => setEditDish({ ...editDish, stock: e.target.value })}
-                            />
-                            <Select
-                                fullWidth
-                                margin="dense"
-                                value={editDish.spice_level  || editDish.category}
-                                onChange={(e) => setEditDish({ ...editDish, category: e.target.value })}
-                            >
+                            <TextField label="Dish Name" fullWidth margin="dense" value={editDish.name} onChange={(e) => setEditDish({ ...editDish, name: e.target.value })} />
+                            <TextField label="Description" fullWidth margin="dense" multiline rows={3} value={editDish.description} onChange={(e) => setEditDish({ ...editDish, description: e.target.value })} />
+                            <TextField label="Price ($)" fullWidth type="number" margin="dense" value={editDish.price} onChange={(e) => setEditDish({ ...editDish, price: e.target.value })} />
+                            <TextField label="Stock" fullWidth type="number" margin="dense" value={editDish.stock} onChange={(e) => setEditDish({ ...editDish, stock: e.target.value })} />
+                            <Select fullWidth margin="dense" value={editDish.category} onChange={(e) => setEditDish({ ...editDish, category: e.target.value })}>
                                 <MenuItem value="Mild">Mild</MenuItem>
                                 <MenuItem value="Medium">Medium</MenuItem>
                                 <MenuItem value="Spicy">Spicy</MenuItem>
                                 <MenuItem value="Extra Spicy">Extra Spicy</MenuItem>
                             </Select>
+                            <input type="file" accept="image/*" onChange={(e) => setNewImage(e.target.files[0])} />
+                            <TextField label="Ingredients" fullWidth variant="outlined" onKeyDown={(e) => {
+                                if (e.key === "Enter" && e.target.value) {
+                                    e.preventDefault();
+                                    setIngredients([...ingredients, e.target.value]);
+                                    e.target.value = "";
+                                }
+                            }} />
+                            {editDish.ingredients.map((ingredient, index) => (
+                                <Chip key={index} label={ingredient} onDelete={() => setIngredients(ingredients.filter((_, i) => i !== index))} className="m-1" />
+                            ))}
                         </>
                     )}
                 </DialogContent>

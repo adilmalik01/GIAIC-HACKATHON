@@ -3,7 +3,7 @@ import cloudinary from '@/lib/cloudinary'
 import connectDB from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 
-export async function GET (request: Request) {
+export async function GET(request: Request) {
   await connectDB()
 
   try {
@@ -19,7 +19,7 @@ export async function GET (request: Request) {
   }
 }
 
-export async function POST (request: Request) {
+export async function POST(request: Request) {
   await connectDB()
 
   try {
@@ -42,7 +42,7 @@ export async function POST (request: Request) {
       category: formData.get('category') as string,
       price: Number(formData.get('price')),
       discount: Number(formData.get('discount')),
-      stock:Number(formData.get('stock')),
+      stock: Number(formData.get('stock')),
       unitType: formData.get('unitType') as string,
       spiceLevel: formData.get('spiceLevel') as string,
       available: formData.get('available') === 'true',
@@ -51,8 +51,8 @@ export async function POST (request: Request) {
       ratings: {
         average: { type: Number, default: 0 },
         reviews_count: { type: Number, default: 0 }
-      },    
-      images: imageUrls         
+      },
+      images: imageUrls
     }
 
     console.log('Received dish:', dish)

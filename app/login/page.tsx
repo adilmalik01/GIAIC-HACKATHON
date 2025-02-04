@@ -19,12 +19,8 @@ const Menu = () => {
             email,
             password,
             redirect: true,
-            callbackUrl: "/profile", // Redirect after successful login
+            callbackUrl: "/profile", 
         });
-
-        if (result.error) {
-            alert(result.error);
-        }
     };
 
     return (

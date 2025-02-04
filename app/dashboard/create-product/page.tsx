@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios"
@@ -20,7 +20,10 @@ const validationSchema = Yup.object({
     images: Yup.array().min(1).max(5, "Select Only 5 Image").of(Yup.mixed().required("Image is required")),
 });
 
+
 export default function AddDishForm() {
+    const [categories, setCategories] = useState<{ id: number; name: string; image: string }[]>([]);
+
     const initialValues = {
         name: "",
         description: "",
@@ -35,6 +38,20 @@ export default function AddDishForm() {
         stock: 0,
         unitType: ""
     };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get("/api/category");
+            setCategories(response.data.categories);
+            console.log(response)
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     const handleSubmit = async (values: any) => {
         try {
@@ -97,11 +114,10 @@ export default function AddDishForm() {
                                 <ErrorMessage name="description" component="div" className="text-red-500" />
 
                                 <Field name="category" as={Select} fullWidth displayEmpty>
-                                    <MenuItem value="">Select Food Category</MenuItem>
-                                    <MenuItem value="Mild">Mild</MenuItem>
-                                    <MenuItem value="Medium">Medium</MenuItem>
-                                    <MenuItem value="Spicy">Spicy</MenuItem>
-                                    <MenuItem value="Extra Spicy">Extra Spicy</MenuItem>
+                                    <MenuItem selected disabled value="">Select Food Category</MenuItem>
+                                    {categories.map((category, i) => (
+                                        <MenuItem key={ i} value={category.name}>{category.name}</MenuItem>
+                                    ))}
                                 </Field>
                                 <ErrorMessage name="category" component="div" className="text-red-500" />
 
