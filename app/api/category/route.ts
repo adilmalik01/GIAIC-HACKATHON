@@ -3,6 +3,8 @@
 import Category from '@/app/models/Category'
 import cloudinary from '@/lib/cloudinary'
 import connectDB from '@/lib/mongodb'
+import slugify from 'react-slugify';
+
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -10,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const categories = await Category.find({})
-        return NextResponse.json({  categories })
+        return NextResponse.json({ categories })
     } catch (error) {
         console.error('Error fetching categories:', error)
         return NextResponse.json(
@@ -36,15 +38,14 @@ export async function POST(request: NextRequest) {
         const buffer = await imageFile.arrayBuffer();
         const base64Image = Buffer.from(buffer).toString("base64");
 
-        console.log("Base64 Image (first 50 chars):", base64Image.substring(0, 50) + "...");
-
         const uploadedImage = await cloudinary.uploader.upload(`data:${imageFile.type};base64,${base64Image}`);
 
-        console.log("Cloudinary Response:", uploadedImage);
 
+        let name = formData.get("name") as string
         const category = {
-            name: formData.get("name") as string,
-            image: uploadedImage.secure_url, // Save only the URL
+            name: name,
+            slug: slugify(name),
+            image: uploadedImage.secure_url,
         };
 
         const newCategory = new Category(category);

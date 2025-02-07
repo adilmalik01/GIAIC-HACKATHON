@@ -4,10 +4,13 @@ import React, { useState } from 'react'
 import { Search, User, ShoppingBag, X, Menu, UserCircle } from 'lucide-react'
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react";
+import { useSelector } from 'react-redux';
+import CartLength from '../cartLength/CartLength';
 
 export default function Navbar1({ title }: any) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session, status } = useSession();
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -15,9 +18,9 @@ export default function Navbar1({ title }: any) {
 
   return (
     <>
-       
+
       <header className=" relative z-50">
-        <nav className="bg-black  px-4 md:px-6">
+        <nav className="bg-black    px-4 md:px-6">
           <div className="mx-auto   sticky top-0 flex h-16 max-w-7xl items-center justify-between">
             <Link href="/" className="flex items-center text-xl font-bold text-white">
               Food<span className="text-orange-500">tuck</span>
@@ -53,10 +56,11 @@ export default function Navbar1({ title }: any) {
                   )}
                 </button>
               </Link>
-              
+
               <Link href="/cart">
                 <button className="text-white hover:text-orange-500">
-                  <ShoppingBag className="h-5 w-5" />
+                 
+                  <CartLength icon={ <ShoppingBag className="h-5 w-5" />} />
                   <span className="sr-only">Cart</span>
                 </button>
               </Link>

@@ -108,26 +108,8 @@ const Dishes = () => {
                 {editDish && (
                         <>
                             <TextField label="Dish Name" fullWidth margin="dense" value={editDish.name} onChange={(e) => setEditDish({ ...editDish, name: e.target.value })} />
-                            <TextField label="Description" fullWidth margin="dense" multiline rows={3} value={editDish.description} onChange={(e) => setEditDish({ ...editDish, description: e.target.value })} />
                             <TextField label="Price ($)" fullWidth type="number" margin="dense" value={editDish.price} onChange={(e) => setEditDish({ ...editDish, price: e.target.value })} />
                             <TextField label="Stock" fullWidth type="number" margin="dense" value={editDish.stock} onChange={(e) => setEditDish({ ...editDish, stock: e.target.value })} />
-                            <Select fullWidth margin="dense" value={editDish.category} onChange={(e) => setEditDish({ ...editDish, category: e.target.value })}>
-                                <MenuItem value="Mild">Mild</MenuItem>
-                                <MenuItem value="Medium">Medium</MenuItem>
-                                <MenuItem value="Spicy">Spicy</MenuItem>
-                                <MenuItem value="Extra Spicy">Extra Spicy</MenuItem>
-                            </Select>
-                            <input type="file" accept="image/*" onChange={(e) => setNewImage(e.target.files[0])} />
-                            <TextField label="Ingredients" fullWidth variant="outlined" onKeyDown={(e) => {
-                                if (e.key === "Enter" && e.target.value) {
-                                    e.preventDefault();
-                                    setIngredients([...ingredients, e.target.value]);
-                                    e.target.value = "";
-                                }
-                            }} />
-                            {editDish.ingredients.map((ingredient, index) => (
-                                <Chip key={index} label={ingredient} onDelete={() => setIngredients(ingredients.filter((_, i) => i !== index))} className="m-1" />
-                            ))}
                         </>
                     )}
                 </DialogContent>

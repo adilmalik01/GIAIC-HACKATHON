@@ -1,7 +1,8 @@
 "use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {  Handbag, Search, List, X } from 'react-bootstrap-icons';
+import { Handbag, Search, List, X } from 'react-bootstrap-icons';
+import CartLength from '../cartLength/CartLength';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,10 +34,10 @@ const Navbar = () => {
 
                 <div className="input-div flex items-center justify-end gap-3">
                     <div className="input rounded-3xl border border-favColor p-3 flex justify-center gap-2">
-                        <input 
-                            placeholder='Search......' 
-                            className="h-full outline-none placeholder:text-white border-none bg-transparent" 
-                            type="text" 
+                        <input
+                            placeholder='Search......'
+                            className="h-full outline-none placeholder:text-white border-none bg-transparent"
+                            type="text"
                         />
                         <button>
                             <Search />
@@ -44,7 +45,9 @@ const Navbar = () => {
                     </div>
                     <h3>
                         <Link href="/cart">
-                            <Handbag />
+
+                            <CartLength icon={<Handbag className="h-5 w-5" />} />
+
                         </Link>
                     </h3>
                 </div>
@@ -77,12 +80,12 @@ const Navbar = () => {
                         <Link href="/about" className="text-white hover:text-[#FF9F0D] text-2xl" onClick={toggleMenu}>About</Link>
                         <Link href="/shop" className="text-white hover:text-[#FF9F0D] text-2xl" onClick={toggleMenu}>Shop</Link>
                         <Link href="/contact" className="text-white hover:text-[#FF9F0D] text-2xl" onClick={toggleMenu}>Contact</Link>
-                    
+
                         <div className="input rounded-3xl border border-favColor p-3 flex justify-center gap-2 w-[80%] max-w-md">
-                            <input 
-                                placeholder='Search......' 
-                                className="w-full h-full outline-none placeholder:text-white border-none bg-transparent" 
-                                type="text" 
+                            <input
+                                placeholder='Search......'
+                                className="w-full h-full outline-none placeholder:text-white border-none bg-transparent"
+                                type="text"
                             />
                             <button>
                                 <Search />

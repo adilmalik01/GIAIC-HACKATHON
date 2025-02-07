@@ -1,58 +1,28 @@
+
 'use client'
 import Navbar1 from "../components/navbar/Navbar1";
 import Footer from "../components/footer/Footer";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart, clearCart, IncreaseItemQuantity, DecreaseItemQuantity } from "../redux/slices/cartSlice";
+import { useEffect, useState } from "react";
+
 
 const Cart = () => {
 
-    const cartItems = [
-        {
-            id: 1,
-            product: "Burger",
-            price: "$35.00",
-            quantity: 1,
-            total: "$221.00",
-            image: "/mainImages/burger.png",
-            stars: 3,
-        },
-        {
-            id: 2,
-            product: "Fresh Lime",
-            price: "$25.00",
-            quantity: 1,
-            total: "$521.00",
-            image: "/mainImages/pizza.png",
-            stars: 2,
-        },
-        {
-            id: 3,
-            product: "Pizza",
-            price: "$15.00",
-            quantity: 1,
-            total: "$421.00",
-            image: "/mainImages/pizza.png",
-            stars: 3,
-        },
-        {
-            id: 4,
-            product: "Chocolate Muffin",
-            price: "$45.00",
-            quantity: 1,
-            total: "$521.00",
-            image: "/mainImages/dish3.png",
-            stars: 2,
-        },
-        {
-            id: 5,
-            product: "Cheese Butter",
-            price: "$16.00",
-            quantity: 1,
-            total: "$325.00",
-            image: "/mainImages/lettuce-leaf.png",
-            stars: 4,
-        },
-    ];
 
+
+    const cartItems: any = useSelector((state: any) => state.cart.cartItems);
+    const dispatch = useDispatch();
+
+
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
+    if (!hydrated) return null;
 
 
     return (<>
@@ -64,45 +34,54 @@ const Cart = () => {
                         <th className="pb-3">Product</th>
                         <th className="pb-3">Price</th>
                         <th className="pb-3">Quantity</th>
-                        <th className="pb-3">Total</th>
-                        <th className="pb-3">Remove</th>
+                        <th className="pb-3 flex justify-center items-center">Remove</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {cartItems.map((item: any) => (
-                        <tr key={item.id} className="border-b">
-                            <td className="py-3 flex items-center gap-3">
-                                <Image
-                                    src={item.image}
-                                    alt={item.product}
-                                    width={60}
-                                    height={60}
-                                    className="rounded-md"
-                                />
-                                <div>
-                                    <p className="font-semibold">{item.product}</p>
-                                    <div className="text-yellow-500">
-                                        {"★".repeat(item.stars)}{" "}
-                                        <span className="text-gray-300">
-                                            {"★".repeat(5 - item.stars)}
-                                        </span>
+                    {cartItems.length === 0 ? (
+                        <div className="py-5 w-full text-center">
+                            <p className=" text-2xl font-inter">No items in cart</p>
+                        </div>
+                    ) : (
+
+
+                        cartItems.map((item: any) => (
+                            <tr key={item.id} className="border-b">
+                                <td className="py-3 flex items-center gap-3">
+                                    <Image
+                                        src={item.images[0]}
+                                        alt={item.product}
+                                        width={150}
+                                        height={150}
+                                        className="rounded-full"
+                                    />
+                                    <div>
+                                        <p className="font-semibold">{item.product}</p>
+                                        <div className="text-yellow-500">
+                                            {"★".repeat(item.stars)}{" "}
+                                            <span className="text-gray-300">
+                                                {"★".repeat(5 - item.stars)}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>{item.price}</td>
-                            <td>
-                                <div className="flex items-center">
-                                    <button className="px-2 border rounded-l">-</button>
-                                    <span className="px-3">{item.quantity}</span>
-                                    <button className="px-2 border rounded-r">+</button>
-                                </div>
-                            </td>
-                            <td>{item.total}</td>
-                            <td>
-                                <button className="text-red-500 hover:text-red-700">X</button>
-                            </td>
-                        </tr>
-                    ))}
+                                </td>
+                                <td>{item.price}</td>
+                                <td>
+                                    <div className="flex items-center">
+                                        <button className="px-2 border rounded-l" onClick={() => dispatch(DecreaseItemQuantity(item.id))}>-</button>
+                                        <span className="px-3">{item.quantity}</span>
+                                        <button className="px-2 border rounded-r" onClick={() => dispatch(IncreaseItemQuantity(item.id))}>+</button>
+                                    </div>
+                                </td>
+                               
+                                <td className="  flex justify-center items-center">
+                                    <button
+                                        onClick={() => dispatch(removeFromCart(item.id))}
+                                        className="text-red-500 hover:text-red-700">X</button>
+                                </td>
+                            </tr>
+                        )))
+                    }
                 </tbody>
             </table>
 

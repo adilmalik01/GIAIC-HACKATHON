@@ -36,8 +36,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         const update = data;
 
         let updatedDish = await Dish.findOneAndUpdate(filter, data);
-        console.log(updatedDish)
-        return NextResponse.json("hello")
+        return NextResponse.json({ message: "Dish Updated Successfully" })
     } catch (error) {
         console.error('Error fetching dishes:', error)
         return NextResponse.json(

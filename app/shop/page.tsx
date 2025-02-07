@@ -6,12 +6,19 @@ import Footer from "../components/footer/Footer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/slices/cartSlice";
 
 export default function ProductGrid() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState<boolean>(true);
    
+    const dispatch = useDispatch();
 
+    const handleAddToCart = (dish:any) => {
+      dispatch(addToCart(dish));
+    };
+  
 
 
     const fetchDishes = async () => {
@@ -71,7 +78,7 @@ export default function ProductGrid() {
                                 <Link href={`/product/${product._id}`}>
                                     <div className="relative h-60">
                                         <Image
-                                            src={product.image_url || "/mainImages/pizza.png"}
+                                            src={product.images[0]}
                                             alt={product.name}
                                             layout="fill"
                                             objectFit="cover"
@@ -96,7 +103,9 @@ export default function ProductGrid() {
                                             </span>
                                         )}
                                     </div>
-                                    <button className="w-full bg-favColor text-white py-2 px-4 rounded shadow hover:bg-orange-500 transition">
+                                    <button 
+                                     onClick={()=>{handleAddToCart(product)}}
+                                    className="w-full bg-favColor text-white py-2 px-4 rounded shadow hover:bg-orange-500 transition">
                                         Add to Cart
                                     </button>
                                 </div>
