@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import Sidebar from "@/app/components/Sidebar/Sidebar";
 import Topbar from "@/app/components/Topbar/Topbar";
 import DashboardContent from "@/app/components/DashboardContent/DashboardContent";

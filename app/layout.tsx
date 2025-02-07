@@ -1,9 +1,9 @@
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import SessionProviderWrapper from "./SessionProviderWrapper";
 import StoreProviders from "./StoreProvider";
+import PageViewTracker from "./components/PageViewTracker/PageViewTracker";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,12 +24,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: any) {
 
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PageViewTracker />
         <SessionProviderWrapper>
           <StoreProviders>
             {children}
