@@ -49,8 +49,8 @@ export async function POST(request: Request) {
       ingredients: formData.getAll('ingredients[]'),
       tags: formData.getAll('tags[]'),
       ratings: {
-        average: { type: Number, default: 0 },
-        reviews_count: { type: Number, default: 0 }
+        average: 0,
+        reviews_count: 0
       },
       images: imageUrls
     }

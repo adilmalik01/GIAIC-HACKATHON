@@ -10,6 +10,7 @@ const ReviewSchema = new mongoose.Schema({
 });
 
 const DishSchema = new mongoose.Schema({
+
   name: { type: String, required: true },
 
   description: { type: String },
@@ -30,7 +31,7 @@ const DishSchema = new mongoose.Schema({
 
   availability: { type: Boolean, default: true },
 
-  spice_level: { type: String, enum: ['Mild', 'Medium', 'Spicy'] },
+  spice_level: { type: String, enum: ['Mild', 'Medium', 'Spicy','Low'] },
 
   ratings: {
     average: { type: Number },

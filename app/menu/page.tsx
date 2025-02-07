@@ -8,9 +8,9 @@ const Menu = () => {
 
 
     return (<>
-        <Navbar1  title={"Menu"}/>
+        <Navbar1 title={"Menu"} />
         <Card />
-        < Footer    />
+        < Footer />
 
     </>);
 }

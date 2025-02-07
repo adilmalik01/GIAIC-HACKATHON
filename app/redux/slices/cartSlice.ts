@@ -1,8 +1,7 @@
 import { Error, Sucess } from "@/app/components/Alerts/Alert";
 import { createSlice } from "@reduxjs/toolkit";
 
-
-
+// Function to get cart from local storage
 const getCartFromLocalStorage = () => {
   if (typeof window !== "undefined") {
     const cart = localStorage.getItem("cart");
@@ -26,46 +25,63 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state: any, action: any) => {
-      const itemIndex: any = state.cartItems.findIndex(
-        (item: any) => item.id === action.payload.id
+      const itemIndex = state.cartItems.findIndex(
+        (item: any) => item._id === action.payload._id
       );
 
-      if (itemIndex >= 0) {
-        Error("Already Added In Cart","warning")
+      if (itemIndex > -1) {
+        Error("Already Added In Cart", "warning");
       } else {
-        state.cartItems.push({ ...action.payload, quantity: 1 });
-        Sucess("Added In Cart","success")
+        state.cartItems.push({ ...action.payload, quantity: 1, totalPrice: action.payload.price });
+        Sucess("Added To Cart", "success");
       }
 
       saveToLocalStorage(state.cartItems);
     },
+
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item: any) => item.id !== action.payload
+        (item: any) => item._id !== action.payload
       );
-
 
       saveToLocalStorage(state.cartItems);
     },
 
     IncreaseItemQuantity: (state, action) => {
-      state.cartItems = state.cartItems.filter(
-        (item: any) => item.quantity += 1
-      )
+      const itemIndex = state.cartItems.findIndex(
+        (item: any) => item._id === action.payload
+      );
 
-      saveToLocalStorage(state.cartItems);
+      console.log(itemIndex);
+
+      if (itemIndex > -1) {
+        state.cartItems[itemIndex].quantity += 1;
+        state.cartItems[itemIndex].totalPrice = state.cartItems[itemIndex].quantity * state.cartItems[itemIndex].price;
+        Sucess("Quantity Increased", "success");
+        saveToLocalStorage(state.cartItems);
+      }
     },
 
     DecreaseItemQuantity: (state, action) => {
-      state.cartItems = state.cartItems.filter(
-        (item: any) => item.quantity -= 1
-      )
-      saveToLocalStorage(state.cartItems);
+      const itemIndex = state.cartItems.findIndex(
+        (item: any) => item._id === action.payload
+      );
+
+      console.log(itemIndex);
+      
+
+      if (itemIndex > -1 && state.cartItems[itemIndex].quantity > 1) {
+        state.cartItems[itemIndex].quantity -= 1;
+        state.cartItems[itemIndex].totalPrice = state.cartItems[itemIndex].quantity * state.cartItems[itemIndex].price;
+        Sucess("Quantity Decreased", "success");
+        saveToLocalStorage(state.cartItems);
+      }
     },
 
-clearCart: (state) => {
-  state.cartItems = [];
-},
+    clearCart: (state) => {
+      state.cartItems = [];
+      saveToLocalStorage(state.cartItems);
+    },
   },
 });
 

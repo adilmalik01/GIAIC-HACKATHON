@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_51QpdEF04RT7QLE1EDhvwOKjKxxVrCL9QHlqyN2cJHn60NaDnGJb8GBqmd98mUITgYL5ma29g00UwKJCVGjBSYSGQ003w8d1v6J");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
     try {
@@ -14,8 +14,8 @@ export async function POST(req: Request) {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
-            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
-            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
+            success_url: `http://localhost:3000/cart`,
+            cancel_url: `http://localhost:3000/cart`,
             customer_email: userDetails.email,
             line_items: cartItems.map((item: any) => ({
                 price_data: {

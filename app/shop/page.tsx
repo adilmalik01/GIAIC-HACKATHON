@@ -16,6 +16,9 @@ export default function ProductGrid() {
     const dispatch = useDispatch();
 
     const handleAddToCart = (dish:any) => {
+
+        
+
       dispatch(addToCart(dish));
     };
   

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart, clearCart, IncreaseItemQuantity, DecreaseItemQuantity } from "../redux/slices/cartSlice";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 
 const Cart = () => {
@@ -51,9 +52,9 @@ const Cart = () => {
                                     <Image
                                         src={item.images[0]}
                                         alt={item.product}
-                                        width={150}
-                                        height={150}
-                                        className="rounded-full"
+                                        width={40}
+                                        height={20}
+                                        className="rounded-[50%]"
                                     />
                                     <div>
                                         <p className="font-semibold">{item.product}</p>
@@ -68,15 +69,15 @@ const Cart = () => {
                                 <td>{item.price}</td>
                                 <td>
                                     <div className="flex items-center">
-                                        <button className="px-2 border rounded-l" onClick={() => dispatch(DecreaseItemQuantity(item.id))}>-</button>
+                                        <button className="px-2 border rounded-l" onClick={() => dispatch(DecreaseItemQuantity(item._id))}>-</button>
                                         <span className="px-3">{item.quantity}</span>
-                                        <button className="px-2 border rounded-r" onClick={() => dispatch(IncreaseItemQuantity(item.id))}>+</button>
+                                        <button className="px-2 border rounded-r" onClick={() => dispatch(IncreaseItemQuantity(item._id))}>+</button>
                                     </div>
                                 </td>
-                               
+
                                 <td className="  flex justify-center items-center">
                                     <button
-                                        onClick={() => dispatch(removeFromCart(item.id))}
+                                        onClick={() => dispatch(removeFromCart(item._id))}
                                         className="text-red-500 hover:text-red-700">X</button>
                                 </td>
                             </tr>
@@ -117,9 +118,11 @@ const Cart = () => {
                         <span>Total Amount</span>
                         <span>$205.00</span>
                     </div>
-                    <button className="w-full mt-4 bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-                        Proceed to Checkout
-                    </button>
+                    <Link href={"/checkout"}>
+                        <button className="w-full mt-4 bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
+                            Proceed to Checkout
+                        </button>
+                    </Link>
                 </div>
             </div>
         </div>

@@ -16,6 +16,7 @@ const validationSchema = Yup.object({
     discount: Yup.number().min(0, "Discount cannot be negative"),
     spiceLevel: Yup.string().required("Spice level is required"),
     ingredients: Yup.array().of(Yup.string().required("Ingredient cannot be empty")),
+    unitType: Yup.string().required("Unit Type is required"),
     tags: Yup.array().of(Yup.string().required("Tag cannot be empty")),
     images: Yup.array().min(1).max(5, "Select Only 5 Image").of(Yup.mixed().required("Image is required")),
 });
@@ -63,6 +64,7 @@ export default function AddDishForm() {
             formData.append("discount", values.discount);
             formData.append("spiceLevel", values.spiceLevel);
             formData.append("available", values.available);
+            formData.append("unitType", values.unitType);
 
             values.ingredients.forEach((ingredient: string | number) => {
                 formData.append("ingredients[]", ingredient);
@@ -113,16 +115,33 @@ export default function AddDishForm() {
                                 <Field name="description" as={TextField} label="Description" multiline rows={4} fullWidth variant="outlined" />
                                 <ErrorMessage name="description" component="div" className="text-red-500" />
 
+
+
+
+
+                                <Field name="spiceLevel" as={Select} fullWidth displayEmpty>
+                                    <MenuItem value="" disabled>Select Spice Level</MenuItem>
+                                    <MenuItem value="Low">Low</MenuItem>
+                                    <MenuItem value="Medium">Mild</MenuItem>
+                                    <MenuItem value="High">High</MenuItem>
+                                    <MenuItem value="Extra High">Extra High</MenuItem>
+                                </Field>
+                                <ErrorMessage name="spiceLevel" component="div" className="text-red-500" />
+
+
                                 <Field name="category" as={Select} fullWidth displayEmpty>
                                     <MenuItem selected disabled value="">Select Food Category</MenuItem>
                                     {categories.map((category, i) => (
-                                        <MenuItem key={ i} value={category.name}>{category.name}</MenuItem>
+                                        <MenuItem key={i} value={category.name}>{category.name}</MenuItem>
                                     ))}
                                 </Field>
                                 <ErrorMessage name="category" component="div" className="text-red-500" />
 
+
                                 <Field name="price" type="number" as={TextField} label="Price ($)" fullWidth variant="outlined" />
                                 <ErrorMessage name="price" component="div" className="text-red-500" />
+
+
 
                                 <Field name="discount" type="number" as={TextField} label="Discount (%)" fullWidth variant="outlined" />
                                 <ErrorMessage name="discount" component="div" className="text-red-500" />
@@ -141,6 +160,8 @@ export default function AddDishForm() {
                                     <MenuItem value="Dozen">Dozen</MenuItem>
                                 </Field>
                                 <ErrorMessage name="unitType" component="div" className="text-red-500" />
+
+
                                 <TextField
                                     label="Ingredients"
                                     fullWidth
@@ -182,7 +203,7 @@ export default function AddDishForm() {
                                     onChange={(e) => setFieldValue("images", [...values.images, ...Array.from(e.target.files)])}
                                 />
                                 {values.images.map((image, index) => (
-                                    <img key={index} src={URL.createObjectURL(image)} alt="Dish" className="w-24 h-24 object-cover m-2" />
+                                    <Image key={index} src={URL.createObjectURL(image)} alt="Dish" width={100} height={100} className="w-24 h-24 object-cover m-2" />
                                 ))}
                                 <ErrorMessage name="images" component="div" className="text-red-500" />
 
