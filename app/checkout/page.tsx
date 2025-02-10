@@ -15,24 +15,35 @@ import {
   User,
   Mail,
   ArrowRight,
-  Trash2
 } from 'lucide-react';
 
 const Checkout = () => {
-  const cartItems = useSelector((state: any) => state.cart.cartItems);
+  interface RootState {
+    cart: {
+      cartItems: {
+        id: string;
+        name: string;
+        price: number;
+        quantity: number;
+        images: string[];
+      }[];
+    };
+  }
+
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const [userDetails, setUserDetails] = useState({
     name: "",
     email: "",
     address: "",
   });
   const [loading, setLoading] = useState(false);
-  const [cartItemMount, setCartItemMount] = useState([]);
+  const [cartItemMount, setCartItemMount] = useState<{ id: string; name: string; price: number; quantity: number; images: string[]; }[]>([]);
 
   useEffect(() => {
     setCartItemMount(cartItems);
   }, [cartItems]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
@@ -62,7 +73,7 @@ const Checkout = () => {
 
   const calculateTotal = () => {
     return cartItemMount.reduce(
-      (total, item: any) => total + item.price * item.quantity,
+      (total, item: { id: string; name: string; price: number; quantity: number; images: string[]; }) => total + item.price * item.quantity,
       0
     );
   };
@@ -78,7 +89,6 @@ const Checkout = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Cart Items Section */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
@@ -96,7 +106,7 @@ const Checkout = () => {
 
               <div className="space-y-4">
                 {cartItemMount.length > 0 ? (
-                  cartItemMount.map((item: any) => (
+                  cartItemMount.map((item: { id: string; name: string; price: number; quantity: number; images: string[]; }) => (
                     <div
                       key={item.id}
                       className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
@@ -129,7 +139,6 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Billing Details Section */}
             <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
               <div className="flex items-center gap-2 mb-6">
                 <CreditCard className="text-gray-600" size={20} />
@@ -170,7 +179,6 @@ const Checkout = () => {
             </div>
           </div>
 
-          {/* Order Summary Section */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6 sticky top-6">
               <h2 className="text-xl font-semibold mb-4">Order Total</h2>

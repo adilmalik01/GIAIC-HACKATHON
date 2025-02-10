@@ -14,7 +14,14 @@ const initialState = {
   cartItems: getCartFromLocalStorage(),
 };
 
-const saveToLocalStorage = (cartItems: any) => {
+interface CartItem {
+  _id: string;
+  price: number;
+  quantity: number;
+  totalPrice: number;
+}
+
+const saveToLocalStorage = (cartItems: CartItem[]) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }
@@ -24,9 +31,9 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state: any, action: any) => {
+    addToCart: (state: { cartItems: CartItem[] }, action: { payload: CartItem }) => {
       const itemIndex = state.cartItems.findIndex(
-        (item: any) => item._id === action.payload._id
+        (item: CartItem) => item._id === action.payload._id
       );
 
       if (itemIndex > -1) {
@@ -41,7 +48,7 @@ const cartSlice = createSlice({
 
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item: any) => item._id !== action.payload
+        (item: CartItem) => item._id !== action.payload
       );
 
       saveToLocalStorage(state.cartItems);
@@ -49,7 +56,7 @@ const cartSlice = createSlice({
 
     IncreaseItemQuantity: (state, action) => {
       const itemIndex = state.cartItems.findIndex(
-        (item: any) => item._id === action.payload
+        (item: CartItem) => item._id === action.payload
       );
 
       console.log(itemIndex);
@@ -64,7 +71,7 @@ const cartSlice = createSlice({
 
     DecreaseItemQuantity: (state, action) => {
       const itemIndex = state.cartItems.findIndex(
-        (item: any) => item._id === action.payload
+        (item: CartItem) => item._id === action.payload
       );
 
       console.log(itemIndex);

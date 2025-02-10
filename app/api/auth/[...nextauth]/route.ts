@@ -1,10 +1,22 @@
-import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import connectDB from '@/lib/mongodb'
-import User from '@/app/models/User'
-import bcrypt from 'bcrypt'
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import User from '@/app/models/User';
+import connectDB from '@/lib/mongodb';
+import bcrypt from 'bcrypt';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export const authOptions = {
+interface CustomUser {
+  id: string;
+  email: string;
+  name: string;
+  image?: string;
+  createdAt: Date;
+  profileBio?: string;
+  isAdmin: boolean;
+}
+
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -12,22 +24,23 @@ export const authOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize (credentials) {
-        const { email, password }: any = credentials
-
-        await connectDB()
-
-        const user = await User.findOne({ email })
-
-        if (!user) {
-          throw new Error('No user found with this email')
+      async authorize(credentials): Promise<CustomUser | null> {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email ya password missing hai');
         }
 
-        console.log(user);
-        
+        await connectDB();
+        const user = await User.findOne({ email: credentials.email });
+        console.log(user)
 
-        const isPasswordCorrect = await bcrypt.compare(password, user.password)
-        if (!isPasswordCorrect) throw new Error('Invalid credentials')
+        if (!user) {
+          throw new Error('Koi user nahi mila is email se');
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
+        if (!isPasswordCorrect) {
+          throw new Error('Galat credentials');
+        }
 
         return {
           id: user._id.toString(),
@@ -36,32 +49,43 @@ export const authOptions = {
           image: user.profilepic,
           createdAt: user.createdAt,
           profileBio: user.profileBio,
-          isAdmin : user.isAdmin
-        }
+          isAdmin: user.isAdmin
+        };
       }
     })
   ],
   callbacks: {
-    async jwt ({ token, user }: any) {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT;
+      user?: CustomUser;
+    }) {
       if (user) {
-        token.isAdmin = user.isAdmin,
-        token.createdAt = user.createdAt,
-        token.profileBio = user.profileBio
+        token.id = user.id;
+        token.isAdmin = user.isAdmin;
+        token.createdAt = user.createdAt;
+        token.profileBio = user.profileBio;
       }
-      return token
+      return token;
     },
-    async session ({ session, token }: any) {
-      session.user.isAdmin = token.isAdmin
-      session.user.profileBio = token.profileBio
-      session.user.createdAt = token.createdAt
-      return session
+    async session({ session, token }: { session: any; token: JWT }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.isAdmin = token.isAdmin;
+        session.user.profileBio = token.profileBio;
+        session.user.createdAt = token.createdAt;
+      }
+      return session;
     }
   },
   session: {
-    strategy: 'jwt' as 'jwt'
+    strategy: 'jwt'
   },
-  secret: '12345'
-}
+  secret: process.env.NEXTAUTH_SECRET || '12345'
+};
 
-const handler: any = NextAuth(authOptions)
-export { handler as GET, handler as POST }
+const handler = (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, authOptions);
+
+export { handler as GET, handler as POST };

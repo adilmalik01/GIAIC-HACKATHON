@@ -5,10 +5,20 @@ import { useSession, signOut } from "next-auth/react";
 
 import { FaUser, FaBox, FaSignOutAlt } from "react-icons/fa";
 import Navbar1 from "../navbar/Navbar1";
+import Image from "next/image";
 
-export default function ProfileClient({ Data }: any) {
+interface UserData {
+  user: {
+    image: string;
+    name: string;
+    email: string;
+    profileBio?: string;
+  };
+}
+
+export default function ProfileClient({ Data }: { Data: UserData }) {
   const [activeTab, setActiveTab] = useState("profile");
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar1 title="Profile" />
@@ -40,7 +50,7 @@ export default function ProfileClient({ Data }: any) {
         <main className="flex-1 p-6 flex flex-col items-center">
           {activeTab === "profile" && (
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl text-center">
-              <img className="w-24 h-24 rounded-full mb-4 mx-auto" src={Data.user.image || "/profile-placeholder.png"} alt="Profile" />
+              <Image width={100} height={100} className="w-24 h-24 rounded-full mb-4 mx-auto" src={Data.user.image || "/profile-placeholder.png"} alt="Profile" />
               <p className="text-lg font-semibold">Welcome, {Data.user.name}</p>
               <p className="text-gray-600">Email: {Data.user.email}</p>
               <p className="text-gray-500 mt-2 italic">{Data.user.profileBio || "No bio available."}</p>

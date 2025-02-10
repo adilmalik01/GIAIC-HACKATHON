@@ -2,7 +2,7 @@ import Swal from 'sweetalert2'
 
 
 
-export function Sucess(text: any, icon: any) {
+export function Sucess(text: string, icon: 'success' | 'error' | 'warning' | 'info' | 'question') {
 
   const Toast = Swal.mixin({
     toast: true,
@@ -27,7 +27,7 @@ export function Sucess(text: any, icon: any) {
 }
 
 
-export function Error(text: any, icon) {
+export function Error(text: string, icon: 'success' | 'error' | 'warning' | 'info' | 'question') {
 
   const Toast = Swal.mixin({
     toast: true,

@@ -22,7 +22,9 @@ export const metadata: Metadata = {
 
 
 
-export default async function RootLayout({ children }: any) {
+import { ReactNode } from "react";
+
+export default async function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en">

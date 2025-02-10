@@ -29,7 +29,9 @@ const categorySchema = Yup.object().shape({
 });
 
 const Category = () => {
-  const [categories, setCategories] = useState<{ id: number; name: string; image: string }[]>([]);
+  const [categories, setCategories] = useState<{
+     _id: number; name: string; image: string 
+}[]>([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -62,12 +64,12 @@ const Category = () => {
 
   const addCategory = async (values: { name: string }) => {
     try {
-      let formData: any = new FormData();
+      const formData: FormData = new FormData();
       formData.append("name", values.name);
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
-    let response = await axios.post("/api/category", formData);
+    const response = await axios.post("/api/category", formData);
       if(response.statusText){
         Sucess(response.data.message,"success")
       }
@@ -82,12 +84,12 @@ const Category = () => {
   const updateCategory = async (values: { name: string }) => {
     if (editIndex === null) return;
     try {
-      let formData: any = new FormData();
+      const formData: FormData = new FormData();
       formData.append("name", values.name);
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
-      await axios.put(`/api/category/${categories[editIndex].id}`, formData);
+      await axios.put(`/api/category/${categories[editIndex]._id}`, formData);
       fetchCategories();
       handleCloseEditDialog();
     } catch (error) {
@@ -98,7 +100,7 @@ const Category = () => {
   const deleteCategory = async () => {
     if (deleteId === null) return;
     try {
-     let response =  await axios.delete(`/api/category?id=${deleteId}`);
+     const response =  await axios.delete(`/api/category?id=${deleteId}`);
       if(response.statusText){
         Sucess(response.data.message,"success")
       }
@@ -151,7 +153,7 @@ const Category = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {categories.map((category:any, index) => (
+              {categories.map((category, index) => (
                 <TableRow key={category._id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../Layout";
+import Image from "next/image";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -32,10 +33,10 @@ const Users = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user: any) => (
+                        {users.map((user: { _id: string; profilepic: string; name: string; email: string; isAdmin: boolean }) => (
                             <tr key={user._id} className="text-center">
                                 <td className="border p-2">
-                                    <img src={user.profilepic} alt="Profile" className="w-10 h-10 rounded-full mx-auto" />
+                                    <Image width={40} height={40} src={user.profilepic} alt="Profile" className="w-10 h-10 rounded-full mx-auto" />
                                 </td>
                                 <td className="border p-2">{user.name}</td>
                                 <td className="border p-2">{user.email}</td>

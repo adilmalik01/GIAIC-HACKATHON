@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useSession } from "next-auth/react";
 import {
   Search,
-  Bell,
   ChevronDown,
   Settings,
   LogOut,
@@ -12,7 +11,7 @@ import {
   Menu
 } from 'lucide-react';
 
-const Topbar = ({ toggleSidebar }: any) => {
+const Topbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const { data: session } = useSession();
   const [showDropdown, setShowDropdown] = useState(false);
 

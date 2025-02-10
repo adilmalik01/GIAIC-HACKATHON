@@ -3,13 +3,16 @@
 import React, { useState } from 'react'
 import { Search, User, ShoppingBag, X, Menu, UserCircle } from 'lucide-react'
 import Link from "next/link"
-import { useSession, signOut } from "next-auth/react";
-import { useSelector } from 'react-redux';
+import { useSession } from "next-auth/react";
 import CartLength from '../cartLength/CartLength';
 
-export default function Navbar1({ title }: any) {
+interface NavbarProps {
+  title: string;
+}
+
+export default function Navbar1({ title }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
 
   const toggleMenu = () => {

@@ -13,9 +13,9 @@ const Menu = () => {
 
     const [password, setPassword] = useState("");
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const result: any = await signIn("credentials", {
+        await signIn("credentials", {
             email,
             password,
             redirect: true,

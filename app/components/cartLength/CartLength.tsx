@@ -11,7 +11,13 @@ interface CartLengthProps {
 
 
 const CartLength: React.FC<CartLengthProps> = ({ icon }) => {
-    const cartItems = useSelector((state: any) => state.cart.cartItems);
+    interface RootState {
+        cart: {
+            cartItems: unknown[]; // Replace 'unknown' with the actual type of cartItems if known
+        };
+    }
+
+    const cartItems = useSelector((state: RootState) => state.cart.cartItems);
 
     const [cartCount, setCartCount] = useState(0);
 

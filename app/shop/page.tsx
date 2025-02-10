@@ -15,11 +15,22 @@ export default function ProductGrid() {
    
     const dispatch = useDispatch();
 
-    const handleAddToCart = (dish:any) => {
+    interface Dish {
+        _id: string;
+        name: string;
+        price: number;
+        oldPrice?: number;
+        images: string[];
+        label?: string;
+    }
 
-        
-
-      dispatch(addToCart(dish));
+    const handleAddToCart = (dish: Dish) => {
+      const cartItem = {
+        ...dish,
+        quantity: 1,
+        totalPrice: dish.price
+      };
+      dispatch(addToCart(cartItem));
     };
   
 
@@ -76,7 +87,7 @@ export default function ProductGrid() {
 
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product: any, index) => (
+                        {products.map((product: Dish, index) => (
                             <div key={index} className="border rounded overflow-hidden shadow-lg hover:shadow-xl transition relative">
                                 <Link href={`/product/${product._id}`}>
                                     <div className="relative h-60">

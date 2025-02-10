@@ -4,10 +4,22 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import Navbar1 from "@/app/components/navbar/Navbar1";
 import Footer from "@/app/components/footer/Footer";
+import Image from "next/image";
 
 const DishDetails = () => {
     const { id } = useParams();
-    const [dish, setDish] = useState<any>(null);
+    interface Dish {
+        name: string;
+        description: string;
+        price: number;
+        images: string[];
+        ratings?: {
+            average: number;
+        };
+        ingredients: string[];
+    }
+
+    const [dish, setDish] = useState<Dish | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string>("");
 
@@ -16,7 +28,7 @@ const DishDetails = () => {
             try {
                 const response = await axios.get(`/api/dishes/${id}`);
                 setDish(response.data.message);
-                setSelectedImage(response.data.message.images[0]); // Pehli image ko default set karna
+                setSelectedImage(response.data.message.images[0]);
             } catch (error) {
                 console.error("Error fetching dish:", error);
             } finally {
@@ -37,7 +49,7 @@ const DishDetails = () => {
 
     if (!dish) {
         return (
-            <div className="flex justify-center items-center ">
+            <div className="flex justify-center  w-full min-h-full  items-center ">
                 <h2 className="text-red-500 text-xl font-bold">Dish not found!</h2>
             </div>
         );
@@ -50,7 +62,7 @@ const DishDetails = () => {
 
                 <div>
                     <div className="relative">
-                        <img src={selectedImage} alt={dish.name} className="rounded-xl w-full h-96 object-cover" />
+                        <Image src={selectedImage} alt={dish.name} className="rounded-xl w-full h-96 object-cover" />
                         <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-lg text-sm font-bold">
                             {dish.price} Rs
                         </div>
@@ -60,7 +72,7 @@ const DishDetails = () => {
                         {dish.images.map((img: string, index: number) => (
                             <div key={index} className="relative h-20 w-20 rounded-lg overflow-hidden border-2 border-gray-300 cursor-pointer"
                                 onClick={() => setSelectedImage(img)}>
-                                <img src={img} alt="small preview" className="object-cover w-full h-full" />
+                                <Image width={100} height={100} src={img} alt="small preview" className="object-cover w-full h-full" />
                             </div>
                         ))}
                     </div>

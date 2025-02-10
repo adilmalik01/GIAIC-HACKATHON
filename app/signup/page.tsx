@@ -5,14 +5,13 @@ import Navbar1 from "../components/navbar/Navbar1";
 import Footer from "../components/footer/Footer";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const Menu = () => {
 
-    let [error, setError] = useState("");
+    const [error, setError] = useState("");
 
-    let router = useRouter();
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -20,7 +19,7 @@ const Menu = () => {
         rememberMe: false,
     });
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
@@ -28,10 +27,10 @@ const Menu = () => {
         });
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response: any = await fetch("/api/signup", {
+            const response: Response = await fetch("/api/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -43,7 +42,7 @@ const Menu = () => {
                 })
             })
 
-            let jsonData = await response.json();
+            const jsonData = await response.json();
 
             if (jsonData.status === 200) {
                 console.log(jsonData.message);
@@ -61,7 +60,7 @@ const Menu = () => {
 
     return (
         <>
-            <Navbar1 />
+            <Navbar1 title="Sign Up" />
 
             <div className="max-w-sm mx-auto mt-14 mb-14 p-6 bg-white shadow-2xl rounded-lg">
                 <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>

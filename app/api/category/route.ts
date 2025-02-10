@@ -7,7 +7,7 @@ import slugify from 'react-slugify';
 
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     await connectDB()
 
     try {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         const uploadedImage = await cloudinary.uploader.upload(`data:${imageFile.type};base64,${base64Image}`);
 
 
-        let name = formData.get("name") as string
+        const name = formData.get("name") as string
         const category = {
             name: name,
             slug: slugify(name),

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   console.log(request.nextUrl.pathname);
 
+  console.log("middleware file is runing")
+
   const token = await getToken({ req: request, secret: "12345" });
 
   const isAdmin = token?.isAdmin === true;

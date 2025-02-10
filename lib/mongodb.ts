@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
-import { MongoClient } from 'mongodb'
 const connectDB = async (): Promise<void> => {
-  const mongoUri: string = process.env.NEXT_PUBLIC_MONGODB_URI! // Non-null assertion
+  const mongoUri: string = process.env.NEXT_PUBLIC_MONGODB_URI!
 
   if (mongoose.connections[0].readyState) {
     console.log('MongoDB already connected - Skipping reconnection')

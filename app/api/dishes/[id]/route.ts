@@ -22,7 +22,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     await connectDB()
 
     try {
-        let data = await request.json()
+        const data = await request.json()
         console.log(data)
 
         if (!isValidObjectId(params.id)) {
@@ -33,9 +33,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         }
 
         const filter = { _id: params.id };
-        const update = data;
-
-        let updatedDish = await Dish.findOneAndUpdate(filter, data);
+     
+        await Dish.findOneAndUpdate(filter, data);
         return NextResponse.json({ message: "Dish Updated Successfully" })
     } catch (error) {
         console.error('Error fetching dishes:', error)

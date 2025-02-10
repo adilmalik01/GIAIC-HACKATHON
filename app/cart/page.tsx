@@ -1,19 +1,33 @@
 "use client"
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart, clearCart, IncreaseItemQuantity, DecreaseItemQuantity } from "../redux/slices/cartSlice";
+import { removeFromCart,  IncreaseItemQuantity, DecreaseItemQuantity } from "../redux/slices/cartSlice";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar1 from "../components/navbar/Navbar1";
 import Footer from "../components/footer/Footer";
-import { ShoppingBag, Minus, Plus, X, ShoppingCart, ArrowRight, Trash2 } from 'lucide-react';
-
+import { Minus, Plus, X, ShoppingCart, ArrowRight, Trash2 } from 'lucide-react';
+interface RootState {
+  cart: {
+    cartItems: {
+      id: string;
+      product: string;
+      price: number;
+      quantity: number;
+      images: string[];
+      stars: number;
+      _id: string;
+    }[];
+  };
+}
 const Cart = () => {
-  const cartItems = useSelector((state: any) => state.cart.cartItems);
+ 
+
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const dispatch = useDispatch();
   const [hydrated, setHydrated] = useState(false);
 
-  const totalPriceReduce = cartItems.reduce((sum: any, product: any) => 
+  const totalPriceReduce = cartItems.reduce((sum: number, product) => 
     sum + (product.price * product.quantity), 0
   );
 
@@ -52,7 +66,6 @@ const Cart = () => {
           <p className="text-gray-600 mt-2">{cartItems.length} items in your cart</p>
         </div>
 
-        {/* Desktop View */}
         <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -65,7 +78,7 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {cartItems.map((item: any) => (
+              {cartItems.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
@@ -119,9 +132,8 @@ const Cart = () => {
           </table>
         </div>
 
-        {/* Mobile View */}
         <div className="md:hidden space-y-4">
-          {cartItems.map((item: any) => (
+          {cartItems.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow-sm p-4">
               <div className="flex gap-4">
                 <div className="relative h-20 w-20 flex-shrink-0">

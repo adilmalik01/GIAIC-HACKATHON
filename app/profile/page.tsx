@@ -9,5 +9,17 @@ export default async function Profile() {
     redirect("/login");
   }
 
-  return <ProfileDetails Data={session} />;
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  const userData = {
+    user: {
+      image: session.user.image || '',
+      name: session.user.name || '',
+      email: session.user.email || ''
+    }
+  };
+
+  return <ProfileDetails Data={userData} />;
 }

@@ -3,11 +3,11 @@ import cloudinary from '@/lib/cloudinary'
 import connectDB from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET() {
   await connectDB()
 
   try {
-    const dishes: any = await Dish.find({})
+    const dishes = await Dish.find({})
 
     return NextResponse.json({ dishes })
   } catch (error) {

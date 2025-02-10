@@ -54,7 +54,22 @@ export default function AddDishForm() {
         fetchCategories();
     }, []);
 
-    const handleSubmit = async (values: any) => {
+    interface DishFormValues {
+        name: string;
+        description: string;
+        category: string;
+        price: string;
+        discount: string;
+        spiceLevel: string;
+        ingredients: string[];
+        tags: string[];
+        available: boolean;
+        images: File[];
+        stock: number;
+        unitType: string;
+    }
+
+    const handleSubmit = async (values: DishFormValues) => {
         try {
             const formData = new FormData();
             formData.append("name", values.name);
@@ -63,18 +78,18 @@ export default function AddDishForm() {
             formData.append("price", values.price);
             formData.append("discount", values.discount);
             formData.append("spiceLevel", values.spiceLevel);
-            formData.append("available", values.available);
+            formData.append("available", values.available.toString());
             formData.append("unitType", values.unitType);
 
             values.ingredients.forEach((ingredient: string | number) => {
-                formData.append("ingredients[]", ingredient);
+                formData.append("ingredients[]", ingredient.toString());
             });
 
             values.tags.forEach((tag: string | number) => {
-                formData.append("tags[]", tag);
+                formData.append("tags[]", tag.toString());
             });
 
-            values.images.forEach((image: string) => {
+            values.images.forEach((image: File) => {
                 formData.append("images", image);
             });
 
@@ -166,11 +181,11 @@ export default function AddDishForm() {
                                     label="Ingredients"
                                     fullWidth
                                     variant="outlined"
-                                    onKeyDown={(e: any) => {
-                                        if (e.key === "Enter" && e.target.value) {
+                                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                        if (e.key === "Enter" && (e.target as HTMLInputElement).value) {
                                             e.preventDefault();
-                                            setFieldValue("ingredients", [...values.ingredients, e.target.value]);
-                                            e.target.value = "";
+                                            setFieldValue("ingredients", [...values.ingredients,(e.target as HTMLInputElement).value]);
+                                            (e.target as HTMLInputElement).value = "";
                                         }
                                     }}
                                 />
@@ -183,11 +198,11 @@ export default function AddDishForm() {
                                     label="Tags"
                                     fullWidth
                                     variant="outlined"
-                                    onKeyDown={(e: any) => {
-                                        if (e.key === "Enter" && e.target.value) {
+                                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                        if (e.key === "Enter" && (e.target as HTMLInputElement).value) {
                                             e.preventDefault();
-                                            setFieldValue("tags", [...values.tags, e.target.value]);
-                                            e.target.value = "";
+                                            setFieldValue("tags", [...values.tags, (e.target as HTMLInputElement).value]);
+                                            (e.target as HTMLInputElement).value = "";
                                         }
                                     }}
                                 />
@@ -200,7 +215,11 @@ export default function AddDishForm() {
                                     type="file"
                                     multiple
                                     accept="image/*"
-                                    onChange={(e) => setFieldValue("images", [...values.images, ...Array.from(e.target.files)])}
+                                    onChange={(e) => {
+                                        if (e.target.files) {
+                                            setFieldValue("images", [...values.images, ...Array.from(e.target.files)]);
+                                        }
+                                    }}
                                 />
                                 {values.images.map((image, index) => (
                                     <Image key={index} src={URL.createObjectURL(image)} alt="Dish" width={100} height={100} className="w-24 h-24 object-cover m-2" />

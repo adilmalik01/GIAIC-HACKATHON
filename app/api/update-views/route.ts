@@ -1,12 +1,16 @@
 import View from "@/app/models/View";
 import connectDB from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
+interface RequestBody {
+    page: string;
+}
 
-export  async function POST(req: NextRequest, res: NextResponse) {
+export  async function POST(req: NextRequest) {
 
     try {
         await connectDB();
-        const { page }: any = await req.json();
+      
+        const { page }: RequestBody = await req.json();
 
         if (!page) return NextResponse.json({ error: "Page is required" }, { status: 400 });
 

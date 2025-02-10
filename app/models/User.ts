@@ -18,6 +18,6 @@ const UserSchema = new mongoose.Schema({
   // emailConfirmTokenExpiry: { type: Date }
 })
 
-let User  = mongoose.models.User || mongoose.model('User', UserSchema)
+const User  = mongoose.models.User || mongoose.model('User', UserSchema)
 
 export default User

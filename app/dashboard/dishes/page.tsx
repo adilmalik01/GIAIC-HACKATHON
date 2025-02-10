@@ -5,18 +5,24 @@ import axios from "axios";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Paper, IconButton, Avatar, Button, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField, Select, MenuItem,
-    Chip
+    DialogActions, TextField
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
 import { Sucess } from "@/app/components/Alerts/Alert";
 
+interface Dish {
+    _id: string;
+    name: string;
+    price: number;
+    stock: number;
+    images: string[];
+}
+
 const Dishes = () => {
-    const [dishes, setDishes] = useState([]);
-    const [ingredients, setIngredients] = useState([]);
+    const [dishes, setDishes] = useState<Dish[]>([]);
     const [open, setOpen] = useState(false);
-    const [editDish, setEditDish] = useState(null);
+    const [editDish, setEditDish] = useState<Dish | null>(null);
     const isMobile = useMediaQuery("(max-width:600px)");
     console.log(editDish)
 
@@ -45,7 +51,7 @@ const Dishes = () => {
         }
     };
 
-    const handleEditClick = (dish: any) => {
+    const handleEditClick = (dish: Dish) => {
         setEditDish(dish);
         setOpen(true);
     };
@@ -57,11 +63,13 @@ const Dishes = () => {
 
     const handleUpdate = async () => {
         try {
-            const response = await axios.put(`/api/dishes/${editDish._id}`, editDish);
-            if (response.status === 200) {
-                Sucess("Dish updated successfully!", "success");
-                FetchProducts();
-                handleClose();
+            if (editDish) {
+                const response = await axios.put(`/api/dishes/${editDish._id}`, editDish);
+                if (response.status === 200) {
+                    Sucess("Dish updated successfully!", "success");
+                    FetchProducts();
+                    handleClose();
+                }
             }
         } catch (error) {
             console.error("Error updating dish:", error);
@@ -108,8 +116,8 @@ const Dishes = () => {
                 {editDish && (
                         <>
                             <TextField label="Dish Name" fullWidth margin="dense" value={editDish.name} onChange={(e) => setEditDish({ ...editDish, name: e.target.value })} />
-                            <TextField label="Price ($)" fullWidth type="number" margin="dense" value={editDish.price} onChange={(e) => setEditDish({ ...editDish, price: e.target.value })} />
-                            <TextField label="Stock" fullWidth type="number" margin="dense" value={editDish.stock} onChange={(e) => setEditDish({ ...editDish, stock: e.target.value })} />
+                            <TextField label="Price ($)" fullWidth type="number" margin="dense" value={editDish.price} onChange={(e) => setEditDish({ ...editDish, price: Number(e.target.value) })} />
+                            <TextField label="Stock" fullWidth type="number" margin="dense" value={editDish.stock} onChange={(e) => setEditDish({ ...editDish, stock: Number(e.target.value) })} />
                         </>
                     )}
                 </DialogContent>
